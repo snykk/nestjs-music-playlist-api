@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { PlaylistRequest, SongRequest, RatingRequest } from './playlist.dto';
+import { PlaylistRequest } from './playlist.dto';
 import { PlaylistException } from './playlist.exception';
 
 @Injectable()

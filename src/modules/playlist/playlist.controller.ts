@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PlaylistService } from './playlist.service';
-import { PlaylistRequest, SongRequest, RatingRequest } from './playlist.dto';
+import { PlaylistRequest } from './playlist.dto';
 import { PlaylistException } from './playlist.exception';
 
 @Controller('/api/playlists')
@@ -29,7 +29,7 @@ export class PlaylistController {
   ) {
     try {
       const result = await this.playlistService.createPlaylist(
-        req.user.id,
+        req.user.userId,
         playlistRequest,
       );
       return { success: true, data: result };
@@ -53,8 +53,9 @@ export class PlaylistController {
   @Get()
   async getUserPlaylists(@Req() req: any) {
     try {
+      console.log(req.user);
       const playlists = await this.playlistService.getUserPlaylists(
-        req.user.id,
+        req.user.userId,
       );
       return { success: true, data: playlists };
     } catch (e) {

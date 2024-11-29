@@ -9,14 +9,3 @@ export class PlaylistResponse {
   genre: string;
   userId: number;
 }
-
-export class SongRequest {
-  title: string;
-  artist: string;
-  album?: string;
-  filePath: string;
-}
-
-export class RatingRequest {
-  rating: number;
-}
