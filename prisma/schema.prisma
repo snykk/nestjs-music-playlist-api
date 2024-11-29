@@ -55,6 +55,7 @@ model SongRating {
   song    Song @relation(fields: [songId], references: [id])
 
   @@map("song_ratings")
+  @@unique([userId, songId]) // Composite unique constraint
 }
 
 model PlaylistSong {

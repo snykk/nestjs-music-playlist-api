@@ -40,7 +40,7 @@ export class AuthService {
       throw new UnauthorizedException('Username or password is not valid');
     }
 
-    const payload = { sub: user.id, username: user.username };
+    const payload = { sub: user.id, username: user.id };
 
     return {
       accessToken: this.jwtService.sign(payload),
