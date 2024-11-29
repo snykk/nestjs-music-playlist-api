@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int        @id @default(autoincrement())
+  username      String     @unique
+  passwordHash  String
+  playlists     Playlist[]
+  songRatings   SongRating[]
+
+  @@map("users")
+}
+
+model Playlist {
+  id       Int      @id @default(autoincrement())
+  name     String
+  genre    String
+  userId   Int
+  user     User     @relation(fields: [userId], references: [id])
+  songs    PlaylistSong[]
+
+  @@map("playlists")
+}
+
+model Song {
+  id        Int      @id @default(autoincrement())
+  title     String
+  artist    String
+  album     String?
+  filePath  String
+  ratings   SongRating[]
+  playlists PlaylistSong[]
+
+  @@map("songs")
+}
+
+model SongRating {
+  id      Int  @id @default(autoincrement())
+  userId  Int
+  songId  Int
+  rating  Int
+  user    User @relation(fields: [userId], references: [id])
+  song    Song @relation(fields: [songId], references: [id])
+
+  @@map("song_ratings")
+}
+
+model PlaylistSong {
+  id         Int      @id @default(autoincrement())
+  playlistId Int
+  songId     Int
+  playlist   Playlist @relation(fields: [playlistId], references: [id])
+  song       Song     @relation(fields: [songId], references: [id])
+
+  @@map("playlist_songs")
+}
