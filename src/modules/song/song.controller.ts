@@ -16,6 +16,8 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SongService } from './song.service';
 import { SongRequest, SongResponse, RatingRequest } from './song.dto';
 import { SongException } from './song.exception';
+import { BaseResponse } from '../../common/base-response';
+import { SongRatingResponse } from '../song_rating/song_rating.dto';
 
 @Controller('/api/songs')
 export class SongController {
@@ -24,13 +26,18 @@ export class SongController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(201)
   @Post()
-  async createSong(@Body() songRequest: SongRequest) {
+  async createSong(
+    @Body() songRequest: SongRequest,
+  ): Promise<BaseResponse<SongResponse>> {
     try {
       const songResponse = await this.songService.createSong(songRequest);
-      return { success: true, data: songResponse };
+      return BaseResponse.successResponse(
+        'Song created successfully',
+        songResponse,
+      );
     } catch (e) {
       if (e instanceof SongException) {
-        throw new HttpException(e.message, e.getStatus());
+        throw e;
       }
 
       throw new HttpException(
@@ -40,15 +47,18 @@ export class SongController {
     }
   }
 
-  @Get()
   @HttpCode(200)
-  async getAllSongs() {
+  @Get()
+  async getAllSongs(): Promise<BaseResponse<SongResponse[]>> {
     try {
       const songs = await this.songService.getAllSongs();
-      return { success: true, data: songs };
+      return BaseResponse.successResponse(
+        'Songs retrieved successfully',
+        songs,
+      );
     } catch (e) {
       if (e instanceof SongException) {
-        throw new HttpException(e.message, e.getStatus());
+        throw e;
       }
 
       throw new HttpException(
@@ -58,16 +68,15 @@ export class SongController {
     }
   }
 
-  @Get('/:id')
   @HttpCode(200)
-  async getSong(@Param('id') id: string) {
+  @Get('/:id')
+  async getSong(@Param('id') id: string): Promise<BaseResponse<SongResponse>> {
     try {
       const song = await this.songService.getSongById(Number(id));
-
-      return { success: true, data: song };
+      return BaseResponse.successResponse('Song retrieved successfully', song);
     } catch (e) {
       if (e instanceof SongException) {
-        throw new HttpException(e.message, e.getStatus());
+        throw e;
       }
 
       throw new HttpException(
@@ -80,16 +89,22 @@ export class SongController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
   @Put('/:id')
-  async updateSong(@Param('id') id: string, @Body() songRequest: SongRequest) {
+  async updateSong(
+    @Param('id') id: string,
+    @Body() songRequest: SongRequest,
+  ): Promise<BaseResponse<SongResponse>> {
     try {
       const updatedSong = await this.songService.updateSong(
         Number(id),
         songRequest,
       );
-      return { success: true, data: updatedSong };
+      return BaseResponse.successResponse(
+        'Song updated successfully',
+        updatedSong,
+      );
     } catch (e) {
       if (e instanceof SongException) {
-        throw new HttpException(e.message, e.getStatus());
+        throw e;
       }
 
       throw new HttpException(
@@ -102,13 +117,13 @@ export class SongController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(204)
   @Delete('/:id')
-  async deleteSong(@Param('id') id: string) {
+  async deleteSong(@Param('id') id: string): Promise<null> {
     try {
       await this.songService.deleteSong(Number(id));
-      return; // no content
+      return;
     } catch (e) {
       if (e instanceof SongException) {
-        throw new HttpException(e.message, e.getStatus());
+        throw e;
       }
 
       throw new HttpException(
@@ -125,17 +140,17 @@ export class SongController {
     @Req() req: any,
     @Param('songId') songId: string,
     @Body() ratingRequest: RatingRequest,
-  ) {
+  ): Promise<BaseResponse<SongRatingResponse>> {
     try {
       const result = await this.songService.rateSong(
         req.user.userId,
         Number(songId),
         ratingRequest,
       );
-      return { success: true, data: result };
+      return BaseResponse.successResponse('Song rated successfully', result);
     } catch (e) {
       if (e instanceof SongException) {
-        throw new HttpException(e.message, e.getStatus());
+        throw e;
       }
 
       throw new HttpException(

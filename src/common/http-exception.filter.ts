@@ -6,6 +6,7 @@ import {
   BadRequestException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { BaseResponse } from './base-response';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -22,24 +23,19 @@ export class GlobalExceptionFilter implements ExceptionFilter {
           .status(status)
           .json(validationResponseBuilder(errorResponse['message']));
       } else if (errorResponse['message']) {
-        return response.status(status).json({
-          success: false,
-          message: 'Bad request',
-        });
+        return response
+          .status(status)
+          .json(BaseResponse.errorResponse('Bad request'));
       }
     }
 
     if (exception instanceof UnauthorizedException) {
-      return response.status(status).json({
-        success: false,
-        message: errorResponse.message,
-      });
+      return response
+        .status(status)
+        .json(BaseResponse.errorResponse(errorResponse.message));
     }
 
-    response.status(status).json({
-      success: false,
-      message: errorResponse,
-    });
+    response.status(status).json(BaseResponse.errorResponse(errorResponse));
   }
 }
 

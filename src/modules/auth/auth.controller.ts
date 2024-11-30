@@ -15,25 +15,28 @@ import {
   RegisResponse,
 } from './auth.dto';
 import { AuthException } from './auth.exception';
+import { BaseResponse } from 'src/common/base-response';
 
 @Controller('/api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/register')
-  async register(@Body() regisRequest: RegisRequest) {
+  async register(
+    @Body() regisRequest: RegisRequest,
+  ): Promise<BaseResponse<RegisResponse>> {
     try {
       const regisResponse: RegisResponse = await this.authService.register(
         regisRequest.username,
         regisRequest.password,
       );
-      return {
-        success: true,
-        data: regisResponse,
-      };
+      return BaseResponse.successResponse(
+        'registratiion success',
+        regisResponse,
+      );
     } catch (e) {
       if (e instanceof AuthException) {
-        throw new HttpException(e.message, e.getStatus());
+        throw e;
       }
 
       throw new HttpException(
@@ -44,19 +47,18 @@ export class AuthController {
   }
 
   @Post('/login')
-  async login(@Body() loginRequest: LoginRequest) {
+  async login(
+    @Body() loginRequest: LoginRequest,
+  ): Promise<BaseResponse<LoginResponse>> {
     try {
       const loginResponse: LoginResponse = await this.authService.login(
         loginRequest.username,
         loginRequest.password,
       );
-      return {
-        success: true,
-        data: loginResponse,
-      };
+      return BaseResponse.successResponse('login success', loginResponse);
     } catch (e) {
       if (e instanceof AuthException) {
-        throw new HttpException(e.message, e.getStatus());
+        throw e;
       }
 
       throw new HttpException(

@@ -9,19 +9,25 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SongRatingService } from './song_rating.service';
 import { SongRatingExceptions } from './song_rating.exception';
+import { SongRatingResponse } from './song_rating.dto';
+import { BaseResponse } from 'src/common/base-response';
 
 @Controller('/api/song_ratings')
 export class SongRatingController {
   constructor(private readonly songRatingService: SongRatingService) {}
 
   @Get()
-  async getAllRatings() {
+  async getAllRatings(): Promise<BaseResponse<SongRatingResponse[]>> {
     try {
-      const ratings = await this.songRatingService.getAllRatings();
-      return { success: true, data: ratings };
+      const ratings: SongRatingResponse[] =
+        await this.songRatingService.getAllRatings();
+      return BaseResponse.successResponse(
+        'All song ratings retrieved successfully',
+        ratings,
+      );
     } catch (e) {
       if (e instanceof SongRatingExceptions) {
-        throw new HttpException(e.message, e.getStatus());
+        throw e;
       }
       throw new HttpException(
         'Internal server error',
@@ -32,15 +38,19 @@ export class SongRatingController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/user/:userId')
-  async getRatingsByUser(@Param('userId') userId: string) {
+  async getRatingsByUser(
+    @Param('userId') userId: string,
+  ): Promise<BaseResponse<SongRatingResponse[]>> {
     try {
-      const ratings = await this.songRatingService.getRatingsByUser(
-        Number(userId),
+      const ratings: SongRatingResponse[] =
+        await this.songRatingService.getRatingsByUser(Number(userId));
+      return BaseResponse.successResponse(
+        'User song ratings retrieved successfully',
+        ratings,
       );
-      return { success: true, data: ratings };
     } catch (e) {
       if (e instanceof SongRatingExceptions) {
-        throw new HttpException(e.message, e.getStatus());
+        throw e;
       }
       throw new HttpException(
         'Internal server error',
@@ -50,15 +60,19 @@ export class SongRatingController {
   }
 
   @Get('/song/:songId')
-  async getRatingsBySong(@Param('songId') songId: string) {
+  async getRatingsBySong(
+    @Param('songId') songId: string,
+  ): Promise<BaseResponse<SongRatingResponse[]>> {
     try {
-      const ratings = await this.songRatingService.getRatingsBySong(
-        Number(songId),
+      const ratings: SongRatingResponse[] =
+        await this.songRatingService.getRatingsBySong(Number(songId));
+      return BaseResponse.successResponse(
+        'Song ratings retrieved successfully',
+        ratings,
       );
-      return { success: true, data: ratings };
     } catch (e) {
       if (e instanceof SongRatingExceptions) {
-        throw new HttpException(e.message, e.getStatus());
+        throw e;
       }
       throw new HttpException(
         'Internal server error',
@@ -72,16 +86,20 @@ export class SongRatingController {
   async getRatingByUserAndSong(
     @Param('userId') userId: string,
     @Param('songId') songId: string,
-  ) {
+  ): Promise<BaseResponse<SongRatingResponse>> {
     try {
-      const rating = await this.songRatingService.getRatingByUserAndSong(
-        Number(userId),
-        Number(songId),
+      const rating: SongRatingResponse =
+        await this.songRatingService.getRatingByUserAndSong(
+          Number(userId),
+          Number(songId),
+        );
+      return BaseResponse.successResponse(
+        'User and song rating retrieved successfully',
+        rating,
       );
-      return { success: true, data: rating };
     } catch (e) {
       if (e instanceof SongRatingExceptions) {
-        throw new HttpException(e.message, e.getStatus());
+        throw e;
       }
       throw new HttpException(
         'Internal server error',

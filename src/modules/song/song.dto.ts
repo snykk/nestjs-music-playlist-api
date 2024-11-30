@@ -27,7 +27,7 @@ export class SongRequest {
 
   @IsNotEmpty({ message: 'File path is required' })
   @IsString({ message: 'File path must be a string' })
-  @IsUrl({}, { message: 'File path must be a valid URL' })
+  // @IsUrl({}, { message: 'File path must be a valid URL' }) no need in dev
   filePath: string;
 }
 
