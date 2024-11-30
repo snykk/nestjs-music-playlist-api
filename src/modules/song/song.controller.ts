@@ -10,6 +10,7 @@ import {
   UseGuards,
   HttpException,
   HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SongService } from './song.service';
@@ -21,6 +22,7 @@ export class SongController {
   constructor(private readonly songService: SongService) {}
 
   @UseGuards(JwtAuthGuard)
+  @HttpCode(201)
   @Post()
   async createSong(@Body() songRequest: SongRequest) {
     try {
@@ -39,6 +41,7 @@ export class SongController {
   }
 
   @Get()
+  @HttpCode(200)
   async getAllSongs() {
     try {
       const songs = await this.songService.getAllSongs();
@@ -56,12 +59,11 @@ export class SongController {
   }
 
   @Get('/:id')
-  async getSong(@Param('id') id: number) {
+  @HttpCode(200)
+  async getSong(@Param('id') id: string) {
     try {
-      const song = await this.songService.getSongById(id);
-      if (!song) {
-        throw new HttpException('Song not found', HttpStatus.NOT_FOUND);
-      }
+      const song = await this.songService.getSongById(Number(id));
+
       return { success: true, data: song };
     } catch (e) {
       if (e instanceof SongException) {
@@ -76,10 +78,14 @@ export class SongController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
   @Put('/:id')
-  async updateSong(@Param('id') id: number, @Body() songRequest: SongRequest) {
+  async updateSong(@Param('id') id: string, @Body() songRequest: SongRequest) {
     try {
-      const updatedSong = await this.songService.updateSong(id, songRequest);
+      const updatedSong = await this.songService.updateSong(
+        Number(id),
+        songRequest,
+      );
       return { success: true, data: updatedSong };
     } catch (e) {
       if (e instanceof SongException) {
@@ -94,11 +100,12 @@ export class SongController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
   @Delete('/:id')
-  async deleteSong(@Param('id') id: number) {
+  async deleteSong(@Param('id') id: string) {
     try {
-      await this.songService.deleteSong(id);
-      return { success: true, message: 'Song deleted successfully' };
+      await this.songService.deleteSong(Number(id));
+      return; // no content
     } catch (e) {
       if (e instanceof SongException) {
         throw new HttpException(e.message, e.getStatus());
@@ -112,16 +119,17 @@ export class SongController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
   @Put('/:songId/rate')
   async rateSong(
     @Req() req: any,
-    @Param('songId') songId: number,
+    @Param('songId') songId: string,
     @Body() ratingRequest: RatingRequest,
   ) {
     try {
       const result = await this.songService.rateSong(
         req.user.userId,
-        songId,
+        Number(songId),
         ratingRequest,
       );
       return { success: true, data: result };
