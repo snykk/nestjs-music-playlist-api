@@ -2,15 +2,14 @@ import {
   Controller,
   Get,
   Post,
-  Put,
-  Delete,
   Body,
-  Param,
-  Query,
-  Req,
   UseGuards,
   HttpException,
   HttpStatus,
+  Req,
+  Param,
+  Delete,
+  Query,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PlaylistService } from './playlist.service';
