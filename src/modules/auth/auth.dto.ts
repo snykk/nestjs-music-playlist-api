@@ -11,7 +11,6 @@ export class LoginRequest {
 export class RegisResponse {
   id: number;
   username: string;
-  passwordHash: string;
 }
 
 export class LoginResponse {

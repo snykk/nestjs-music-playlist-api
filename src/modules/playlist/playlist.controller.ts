@@ -38,10 +38,6 @@ export class PlaylistController {
         throw new HttpException(e.message, e.getStatus());
       }
 
-      if (e instanceof PlaylistException) {
-        throw new HttpException(e.message, e.getStatus());
-      }
-
       throw new HttpException(
         'Internal server error',
         HttpStatus.INTERNAL_SERVER_ERROR,
