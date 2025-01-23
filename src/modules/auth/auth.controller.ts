@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  HttpCode,
   HttpException,
   HttpStatus,
   Post,
@@ -20,6 +21,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/register')
+  @HttpCode(201)
   async register(
     @Body() regisRequest: RegisRequest,
   ): Promise<BaseResponse<RegisResponse>> {
@@ -45,6 +47,7 @@ export class AuthController {
   }
 
   @Post('/login')
+  @HttpCode(200)
   async login(
     @Body() loginRequest: LoginRequest,
   ): Promise<BaseResponse<LoginResponse>> {
