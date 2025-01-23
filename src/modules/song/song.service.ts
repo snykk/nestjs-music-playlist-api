@@ -13,7 +13,11 @@ export class SongService {
         data: songRequest,
       });
     } catch (error) {
-      throw new HttpException(
+      if (error instanceof SongException) {
+        throw error;
+      }
+
+      throw new SongException(
         'Error creating song',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );

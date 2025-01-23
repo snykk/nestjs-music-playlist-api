@@ -1,13 +1,20 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { PlaylistRequest } from './playlist.dto';
+import {
+  PlaylistRequest,
+  PlaylistResponse,
+  PlaylistSongResponse,
+} from './playlist.dto';
 import { PlaylistException } from './playlist.exception';
 
 @Injectable()
 export class PlaylistService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createPlaylist(userId: number, playlistRequest: PlaylistRequest) {
+  async createPlaylist(
+    userId: number,
+    playlistRequest: PlaylistRequest,
+  ): Promise<PlaylistResponse> {
     try {
       return await this.prisma.playlist.create({
         data: {
@@ -23,7 +30,7 @@ export class PlaylistService {
     }
   }
 
-  async getUserPlaylists(userId: number) {
+  async getUserPlaylists(userId: number): Promise<PlaylistResponse[]> {
     try {
       const playlists = await this.prisma.playlist.findMany({
         where: { userId },
@@ -47,7 +54,10 @@ export class PlaylistService {
     }
   }
 
-  async addSongToPlaylist(playlistId: number, songId: number) {
+  async addSongToPlaylist(
+    playlistId: number,
+    songId: number,
+  ): Promise<PlaylistSongResponse> {
     try {
       const song = await this.prisma.song.findUnique({
         where: { id: songId },

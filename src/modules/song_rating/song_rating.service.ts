@@ -1,12 +1,13 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { SongRatingExceptions } from './song_rating.exception';
+import { SongRatingResponse } from './song_rating.dto';
 
 @Injectable()
 export class SongRatingService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllRatings() {
+  async getAllRatings(): Promise<SongRatingResponse[]> {
     try {
       const ratings = await this.prisma.songRating.findMany({
         include: {
@@ -35,7 +36,7 @@ export class SongRatingService {
     }
   }
 
-  async getRatingsByUser(userId: number) {
+  async getRatingsByUser(userId: number): Promise<SongRatingResponse[]> {
     try {
       const ratings = await this.prisma.songRating.findMany({
         where: { userId },

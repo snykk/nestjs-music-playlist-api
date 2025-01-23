@@ -4,8 +4,6 @@ import {
   HttpException,
   HttpStatus,
   Post,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
@@ -15,7 +13,7 @@ import {
   RegisResponse,
 } from './auth.dto';
 import { AuthException } from './auth.exception';
-import { BaseResponse } from 'src/common/base-response';
+import { BaseResponse } from '../../common/base-response';
 
 @Controller('/api/auth')
 export class AuthController {
@@ -31,7 +29,7 @@ export class AuthController {
         regisRequest.password,
       );
       return BaseResponse.successResponse(
-        'registratiion success',
+        'User registered successfully',
         regisResponse,
       );
     } catch (e) {
@@ -55,7 +53,10 @@ export class AuthController {
         loginRequest.username,
         loginRequest.password,
       );
-      return BaseResponse.successResponse('login success', loginResponse);
+      return BaseResponse.successResponse(
+        'User logged in successfully',
+        loginResponse,
+      );
     } catch (e) {
       if (e instanceof AuthException) {
         throw e;

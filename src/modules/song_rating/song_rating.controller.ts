@@ -10,7 +10,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SongRatingService } from './song_rating.service';
 import { SongRatingExceptions } from './song_rating.exception';
 import { SongRatingResponse } from './song_rating.dto';
-import { BaseResponse } from 'src/common/base-response';
+import { BaseResponse } from '../../common/base-response';
 
 @Controller('/api/song_ratings')
 export class SongRatingController {
