@@ -121,7 +121,10 @@ describe('PlaylistController', () => {
 
       jest.spyOn(service, 'addSongToPlaylist').mockResolvedValue(response);
 
-      const result = await controller.addSongToPlaylist(playlistId, request);
+      const result = await controller.addSongToPlaylist(
+        playlistId.toString(),
+        request,
+      );
 
       expect(result).toEqual(
         BaseResponse.successResponse(
@@ -136,7 +139,7 @@ describe('PlaylistController', () => {
     });
 
     it('should throw an exception if service fails', async () => {
-      const playlistId = 1;
+      const playlistId = '1';
       const request: AddSongToPlaylistRequest = { songId: 2 };
 
       jest
@@ -159,8 +162,8 @@ describe('PlaylistController', () => {
         .mockResolvedValue(undefined);
 
       const result = await controller.removeSongFromPlaylist(
-        playlistId,
-        songId,
+        playlistId.toString(),
+        songId.toString(),
       );
 
       expect(result).toBeUndefined();
@@ -179,7 +182,10 @@ describe('PlaylistController', () => {
         .mockRejectedValue(new PlaylistException('Error', 500));
 
       await expect(
-        controller.removeSongFromPlaylist(playlistId, songId),
+        controller.removeSongFromPlaylist(
+          playlistId.toString(),
+          songId.toString(),
+        ),
       ).rejects.toThrow(PlaylistException);
     });
   });

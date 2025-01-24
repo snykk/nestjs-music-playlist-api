@@ -143,7 +143,7 @@ export class SongController {
   ): Promise<BaseResponse<SongRatingResponse>> {
     try {
       const result = await this.songService.rateSong(
-        req.user.userId,
+        Number(req.user.userId),
         Number(songId),
         ratingRequest,
       );

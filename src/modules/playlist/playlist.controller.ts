@@ -86,13 +86,13 @@ export class PlaylistController {
   @HttpCode(200)
   @Post('/:id/songs')
   async addSongToPlaylist(
-    @Param('id') playlistId: number,
+    @Param('id') playlistId: string,
     @Body() songRequest: AddSongToPlaylistRequest,
   ): Promise<BaseResponse<PlaylistSongResponse>> {
     try {
       const result: PlaylistSongResponse =
         await this.playlistService.addSongToPlaylist(
-          playlistId,
+          Number(playlistId),
           songRequest.songId,
         );
       return BaseResponse.successResponse(
@@ -115,11 +115,14 @@ export class PlaylistController {
   @HttpCode(204)
   @Delete('/:id/songs/:songId')
   async removeSongFromPlaylist(
-    @Param('id') playlistId: number,
-    @Param('songId') songId: number,
+    @Param('id') playlistId: string,
+    @Param('songId') songId: string,
   ): Promise<null> {
     try {
-      await this.playlistService.removeSongFromPlaylist(playlistId, songId);
+      await this.playlistService.removeSongFromPlaylist(
+        Number(playlistId),
+        Number(songId),
+      );
       return;
     } catch (e) {
       if (e instanceof PlaylistException) {
